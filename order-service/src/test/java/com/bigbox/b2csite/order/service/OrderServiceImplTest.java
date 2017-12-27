@@ -9,7 +9,6 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.exceptions.base.MockitoAssertionError;
 
 import com.bigbox.b2csite.order.dao.OrderDao;
 import com.bigbox.b2csite.order.model.domain.OrderSummary;
