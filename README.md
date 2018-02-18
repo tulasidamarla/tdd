@@ -272,3 +272,150 @@ There may be have been certain operations called on the mock but no others were 
 
 	Mockito.verify(...).noMoreInteractions();
 	
+Argument Matching
+-----------------
+For implicit argument matching mockito uses equals method for reference types and == for value types. For ex,Consider the below statement.
+
+	OrderEntity orderEntityFixture = ...;
+	Mockito.when(mockOrderDao.findById("23")).thenReturn(orderEntityFixture);
+	
+The above code returns the stub orderEntityFixture if the argument matches, returns null if not matched.
+
+Explicit argument matcher provides more flexibility. These types make the stub more generic. Consider the scenario where in the orderDao is called repeatedly in a for loop for different sets of id's it is very tedious to write stub for each argument that is matched. For ex, consider the below code snippet.
+	
+	CustomerEntity customer = customerDao.findById(customerId);
+	for(CustomerEntity altCustId: customer.getAlternateCustomerAccounts()){
+		List<OrderEntity> orders = orderDao.findByCustomerId(altCustId.getId());
+	}
+
+The below test code using argument matcher is the write way to return the generic stubs.
+
+	Mockito.when(mockOrderDao.findByCustomerId(Matchers.anyString())).thenReturn(orderEntityFixture);
+
+Note: If any arguments are explicit, all arguments must be explicit. So, below code snippet won't work. It will throw an exception at runtime.
+
+	//This line throw exception at runtime. Explicit and implicit argument matchers should not be present for the same method.
+	Mockito.when(mockOrderDao.findByStateAndRegion("IL",Matchers.anyString())).thenReturn(orderEntityFixture);
+	
+	//The below line of code uses both explicit argument matching.
+	Mockito.when(mockOrderDao.findByStateAndRegion(Matchers.eq("IL"), Matchers.anyString())).thenReturn(orderEntityFixture);
+
+Types of Matchers
+-----------------
+1)Equality matchers: For ex: Matchers.eq()
+2)Any matchers. These are present for each data type. For ex: Matchers.anyInt(),Matchers.anyDouble(), Matchers.any(String.class), Matchers.anySetOf(String.class) etc.
+3)String matchers. These are used to match strings. For ex, Matchers.eq("Brown"), Matchers.contain("Bro"), Matchers.startsWith("Br"), Matchers.endsWith("own"), Matchers.match("^(Br|Cr)own")
+4)Reference equality and reflection. Test reference equality with Matchers.same(ref). Also, reflectively test using Matchers.refEq(ref), matchers.refEq(ref,"excludeField").
+
+Stubbing consecutive calls
+--------------------------
+Stubbing consecutive calls is handy for testing logic that needs to resilient when an error occurs. These are useful in below scenarios.
+1)looping logic that either short-circuits or continues on exception
+2)retry logic when errors are encountered.
+
+Note: Stubbing consecutive responses helps simplify these types of tests.
+
+Consider the below example which describes the consecutive calls scenario.
+
+	OrderServiceImpl
+	----------------
+	public String openNewOrder(long customerId) throws ServiceException {
+		
+		OrderEntity newOrderEntity = new OrderEntity();
+		newOrderEntity.setCustomerId(customerId);
+		newOrderEntity.setOrderNumber(UUID.randomUUID().toString());
+		
+		boolean insertSuccessful = false;
+		int insertAttempt = 1;
+		while (!insertSuccessful && insertAttempt <= MAX_INSERT_ATTEMPT) {
+			
+			try {
+				int resultValue = orderDao.insert(newOrderEntity);
+				if (resultValue == 1) {
+					insertSuccessful = true;
+				}
+				else {
+
+					++insertAttempt;
+				}
+			} catch (DataAccessException e) {
+				// Log error
+				++insertAttempt;
+			}
+		}
+		
+		if (!insertSuccessful) {
+			throw new ServiceException("Data access error prevented creation of order");
+		}
+		
+		return newOrderEntity.getOrderNumber();
+	}
+
+	OrderServiceImplTest
+	--------------------
+	@Test
+	public void test_openNewOrder_successfullyRetriesDataInsert() throws Exception {
+		
+		// Setup
+		Mockito.when(mockOrderDao.insert(Mockito.any(OrderEntity.class)))
+			.thenThrow(new DataAccessException("First exception")).thenReturn(1);
+		
+		// Execution
+		this.target.openNewOrder(CUSTOMER_ID);
+		
+		// Verification
+		Mockito.verify(mockOrderDao, Mockito.times(2)).insert(Mockito.any(OrderEntity.class));
+		
+	}
+	
+	
+	@Test(expected=ServiceException.class)
+	public void test_openNewOrder_failedDataInsert() throws Exception {
+		
+		// Setup
+		Mockito.when(mockOrderDao.insert(Mockito.any(OrderEntity.class)))
+		.thenThrow(new DataAccessException("First exception"))
+		.thenThrow(new DataAccessException("Second exception"));
+
+		try {
+			// Execution
+			this.target.openNewOrder(CUSTOMER_ID);	
+		}finally {
+			// Verification
+			//This method won't get executed unless put in finally block because openNewOrder method throws ServiceException when orderDao insert //throw DataAccessException second time also.
+			Mockito.verify(mockOrderDao, Mockito.times(2)).insert(Mockito.any(OrderEntity.class));
+		}
+	}
+
+Verification Order
+------------------
+Sometimes verification order is critical. For ex, <br>
+1)Legacy apis and dependencies sometimes enforce restrictions
+2)Results of one dependency may be needed when interacting with other.
+
+Consider the scenario in which OrderService calls OfferService to get all the discounts. Then it calls TaxService to calculate tax on the amount after the discounts. So, verification order is critical here. Mockito provides InOrder class to verify this order. Consider the below code snippet.
+
+	//Setup
+	OrderItem orderItemFixture = new OrderItem();
+	ItemDiscount itemDiscountFixture = new ItemDiscount();
+	Mockito.when(mockOfferService.calculateDiscount(orderItemFixture)).thenReturn(itemDiscountFixture);
+	
+	TaxDetail taxAmountFixture = new TaxDetail("2.34");
+	Mockito.when(mockTaxService.calculateTax(orderItemFixture, itemDiscountFixture).thenReturn(taxAmountFixture);
+	
+	//execution
+	this.target.calculateTotal(orderFixture);
+	
+	//verification
+	InOrder inorderVerifier = Mockito.inOrder(mockOfferService,mockTaxService);
+	
+	inorderVerifier.verify(mockOfferService).calculateDiscount(orderItemFixture);
+	inorderVerifier.verify(mockTaxService).calculateTax(orderItemFixture,itemDiscountFixture);
+
+Capturing Arguments
+-------------------
+Sometimes, the method-under-test creates an object to pass to a dependency but never returns it. For ex, if a service class method creates a domain object and transforms it to an entity object and saves it to db. In this scenario, the test method really needs to validate the object and the data set on it to ensure it was constructed correctly. This is where argument capturing is handy. Mockito's mechanism for capturing these types of arguments is called Argument captors. Argument captor allows us to capture the actual object passed into the the mock during execution from within our test class code.
+
+
+
+	
