@@ -13,33 +13,33 @@ In the earlier days of automated unit testing developers often write their funct
 
 2)Benefits of automation missed --> With automation developers are able to add and revise the code with certainity that they do not unintentionally break functionality or change assumptions previously held when creating the code. The further you defer automation, the more likely that changes made in future development unintentionally break something.
 
-3)Time crunch encountered in projects --> The more an application is tested upfront the greate gauge a developer have on how much effort is remaining to complete the project. Thus, when you save the tests until the end developers encounter few scenarios like this.
-	a) Developer may run out of time to automate any tests. The code is functional, the dead line has approached and it becomes difficult to justify additional time as the stakeholders view everything as functional within the system.
+3)Time crunch encountered in projects --> The more an application is tested upfront the greate gauge a developer have on how much effort is remaining to complete the project. Thus, when you save the tests until the end developers encounter few scenarios like this.<br>
+	a) Developer may run out of time to automate any tests. The code is functional, the dead line has approached and it becomes difficult to justify additional time as the stakeholders view everything as functional within the system.<br>
 	b)Developer may have underestimate the true effort of testing and it has become more complicated because developer did not design the system with this in mind.
 
 4)Mountain of work to implement the automated unit test --> Saving all the testing to the end leads to the feeling of a daunting effort once developer starts testing. Developer typically tries to figure out how to work around more complexity and become frustrated with the lack of structure he encounters because of the thinking how the test can be broken down and work in conjunction with the design of the code.
 
 Benefits of TDD
 ---------------
-1)TDD brings in more balance because developers don't do too much of coding or testing in disproportionate manner.
-2)Consistent repeatability of test execution. Once test is written it can be repeatedly executed without any effort.
+1)TDD brings in more balance because developers don't do too much of coding or testing in disproportionate manner.<br>
+2)Consistent repeatability of test execution. Once test is written it can be repeatedly executed without any effort.<br>
 3)Upfront design with testing in mind. It makes developer identify the code smell(something in the code which indicates a potential issue) early.
 
 Red/Green/Refactor
 ------------------
-A command pattern used in TDD is called Red/Green/Refactor. Here are the steps
-1)Write a statement(or statements) resulting in a failing test. 
-2)Implement the functionality, this should result in a success test, fixing all the issues found in step 1.
+A command pattern used in TDD is called Red/Green/Refactor. Here are the steps<br>
+1)Write a statement(or statements) resulting in a failing test. <br>
+2)Implement the functionality, this should result in a success test, fixing all the issues found in step 1.<br>
 3)Refactor the code as needed to simplify the design. 
 
 Note: If developer refactors the code, the test should still pass. Depending on the complexity of the code, developer may need to refactor the test as well. If no refactor remains, continue on with the test method repeating this pattern until all aspects of the method functionality are complete.
 
 Terminology
 -----------
-Here are some of the general terms used in TDD.
-1)xUnit Testing --> This is a generic reference to automated unit testing using a unit test framework. JUnit is an implementation of a xUnit Testing framework being adapted from earlier versions of small talk unit testing framework.
-2)Class-Under-Test --> An automated unit test should focus on testing functionality of the methods in a single class. It is advisable to have one or more test classes for a single functional class. The class being tested in this case, is referred to as Class-Under-Test.
-3)Method-Under-Test --> This is the target method that a single JUnit test method will be executing to verify the functionality and validate assumptions made during development of the functional code. Developer should strive to test no more than one Method-Under-Test with in a single JUnit test method.
+Here are some of the general terms used in TDD.<br>
+1)xUnit Testing --> This is a generic reference to automated unit testing using a unit test framework. JUnit is an implementation of a xUnit Testing framework being adapted from earlier versions of small talk unit testing framework.<br>
+2)Class-Under-Test --> An automated unit test should focus on testing functionality of the methods in a single class. It is advisable to have one or more test classes for a single functional class. The class being tested in this case, is referred to as Class-Under-Test.<br>
+3)Method-Under-Test --> This is the target method that a single JUnit test method will be executing to verify the functionality and validate assumptions made during development of the functional code. Developer should strive to test no more than one Method-Under-Test with in a single JUnit test method.<br>
 4)Test Fixture --> This term encompasses the setup of data for use in a test. This may be setup of an object in a certain state or it may encompass the setup of database to support the test execution. The best practice is to setup the fixture at the beginning of each test and tear at the end.
 
 Common myths about TDD
@@ -59,8 +59,8 @@ Note: Testing frameworks typically support the ability to ignore test cases. It 
 
 Java test frameworks
 --------------------
-Mockito --> This will help in mocking and stubbing of dependent interfaces and objects help in implementing mock patterns in test code.
-DBUnit --> This framework covers sql based database data fixture setup and tear down and validation of data manipulations occuring as a result of the Method-Under-Test being executed.
+Mockito --> This will help in mocking and stubbing of dependent interfaces and objects help in implementing mock patterns in test code.<br>
+DBUnit --> This framework covers sql based database data fixture setup and tear down and validation of data manipulations occuring as a result of the Method-Under-Test being executed.<br>
 PowerMockito --> This framework contains extended mocking capabilities not supporting directly in mockito like testing private , static methods etc.
 
 JUnit testing concepts
@@ -77,11 +77,11 @@ JUnit is a framework for java developers to write automated unit tests. Develope
 
 JUnit core contructs
 --------------------
-Junit classes are standard java classes. Here are the core constructs from org.junit package.
+Junit classes are standard java classes. Here are the core constructs from org.junit package.<br>
 1)@Test --> Test classes are marked with @Test annotation. This annotation informs the framework of the methods in the testing class that will execute methods on that Class-Under-Test and perform verification. This allows the test runner program to coordinate execution and display the pass/fail indicator for each of the tests.
 
-2)Verification Methods --> Verification is handled in the test method directly or indirectly. Junit provides two general approaches for performing these verifications.
-	a) org.junit.Assert --> This class contains a set of static methods which trigger the test to fail when resulting evaluations returns false.
+2)Verification Methods --> Verification is handled in the test method directly or indirectly. Junit provides two general approaches for performing these verifications.<br>
+	a) org.junit.Assert --> This class contains a set of static methods which trigger the test to fail when resulting evaluations returns false.<br>
 	b)HamcrestMatcherAssert --> It is an additional library providing extensions to Junit's assertion mechanism. This provides an alternative for declaring assertions that are more readable. For ex,
 		
 		//JUnit
@@ -98,36 +98,38 @@ Note: Class level annotation are good for resources that are more expensive to c
 
 Mocking concepts
 ----------------
-There are few scenarios like transformation of objects need dependencies. But, more often Method-Under-Test leverage dependencies from other layers of the system or external system. Testing these methods with dependencies in place can become complicated and unpredictable. For ex, a service class often depends on dao class. Testing the service class create few challengs like below.
-1)Live database connection needed. --> If connection is not available while the testing is focusing on service class then testing become stalled based on component not relavant to the true Class-Under-Test.
-2)Multiple testers developing simultaneously --> Multiple developers may be testing the dao layer simultaneously and this may result in conflicts. This may also be faced when working with external systems.
+There are few scenarios like transformation of objects need dependencies. But, more often Method-Under-Test leverage dependencies from other layers of the system or external system. Testing these methods with dependencies in place can become complicated and unpredictable. For ex, a service class often depends on dao class. Testing the service class create few challengs like below.<br>
+1)Live database connection needed. --> If connection is not available while the testing is focusing on service class then testing become stalled based on component not relavant to the true Class-Under-Test.<br>
+2)Multiple testers developing simultaneously --> Multiple developers may be testing the dao layer simultaneously and this may result in conflicts. This may also be faced when working with external systems.<br>
 3)Incomplete dependency implementation --> The dependent component interface is available but the component's implementation is not yet done.
 
 Mocking framework gives control. This will allows to replace the dependencies on implementation classes with a mocked implementation during the test execution. They help solve the problems of database dependency, external dependencies etc.
 
 Mocking options
 ---------------
-1)One way to implement mocking is to create a mocked implementation of the interface or extension of the dependency. This approach is tedious because it requires a bit of coding to account for the many different conditions that needs to be tested and create obscure tests because many of the details related to test conditions are in a seperate class.
+1)One way to implement mocking is to create a mocked implementation of the interface or extension of the dependency. This approach is tedious because it requires a bit of coding to account for the many different conditions that needs to be tested and create obscure tests because many of the details related to test conditions are in a seperate class.<br>
 2)Another way to leverage a mocking framework like Mockito, which provides a mocked implementation without creating a dedicated class. The api's use dynamic proxies or similar feature to provide each generic implementation of the dependent interface or extension of the dependent class.
 
 Note: Some of the famous mocking frameworks for java include Mockito, EasyMock, JMock. Additionally frameworks like spring contains their own sets of mocking capabilities that can be used independently or inconjuction with these frameworks.
 
 Mockito Overview
 ----------------
-Mockito provides capabilities that help support the four stages of unit testing cycle. This mostly focuses on first three stages i.e. setup, execution and verification.
+Mockito provides capabilities that help support the four stages of unit testing cycle. This mostly focuses on first three stages i.e. setup, execution and verification.<br>
 1)During setup phase use the framework to create mocks and declare how the dependencies should behave when called during execution in the Method-Under-Test. For ex,
+
 	//creating the mock
 	OrderDao mockOrderDao = Mockito.mock(OrderDao.class);
 	//stubbing method
 	Mockito.when(mockOrderDao.findById(idValue)).thenReturn(orderFixture);
 	
-2)During execution the mocks go into a method that responds to request made by the Method-Under-Test. The mocks will react to specific set of parameters to control the behavior of interfaction and any result returned.
+2)During execution the mocks go into a method that responds to request made by the Method-Under-Test. The mocks will react to specific set of parameters to control the behavior of interfaction and any result returned.<br>
 3)During verification the framework provides capabilities to ensure mocks will be interacted in the manner test is intended. The most core operations centered around the mockito class and set of static methods it provides.
+
 	Mockito.verify(mockOrderDao).findById(idValue)
 
 Creating Mock instances
 -----------------------
-Creating mock objects using the static method mock is good, but when used repeatedly it creates more redundant code. There alternative appoaches available.
+Creating mock objects using the static method mock is good, but when used repeatedly it creates more redundant code. There alternative appoaches available.<br>
 1)First option is to create this as class level variable and initialize it in the setup method. For ex,
 
 	class OrderServiceTest{
@@ -159,7 +161,7 @@ Note: In the above example using Mock annotation, when more mock objects are pre
 
 MockSettings
 ------------
-Sometimes the mock instance needs to have more complex capabilities. Suppose we have a dependency that implement multiple interfaces. As we know the best practice is not code to the implementations, it does happen sometimes. The MockSettings interface provides added control for mock creation.
+Sometimes the mock instance needs to have more complex capabilities. Suppose we have a dependency that implement multiple interfaces. As we know the best practice is not code to the implementations, it does happen sometimes. The MockSettings interface provides added control for mock creation.<br>
 Using extraInterfaces method will take variable no of interfaces which the resulting mock will implement.Consider the below code.
 
 	MockSettings settings = Mockito.withSettings();
@@ -201,7 +203,7 @@ Let's see the test method of OrderControllerTest.
 		invocationStub.thenReturn(orderSummaryFixtureList);
 	}
 	
-2)thenThrow(...) --> We often face the scenarios where exceptions occurs in the code and need to deal with testing this to ensure code behaves as expected. When using non-automated approach this is very difficult to test. thenThrow() specifies mock invocation should result in exception thrown.
+2)thenThrow(...) --> We often face the scenarios where exceptions occurs in the code and need to deal with testing this to ensure code behaves as expected. When using non-automated approach this is very difficult to test. thenThrow() specifies mock invocation should result in exception thrown.<br>
 This operation expects an instance of exception as a parameter and stores it to be thrown later during the execution. Consider the below example.
 
 	Mockito.when(mockOrderDao.findById(idValue)).thenThrow(new OrderServiceException("Test error reason"));
@@ -253,11 +255,11 @@ VerificationMode is an object allows to specify the no of times we expect the mo
 	
 	Mockito.verify(mockOrderService, VerificationSettings.times(2)).getOrderSummary(customerid);
 
-Mockito supports various operations for returning the appropriate VerificationMode instance. Here are few.
-1)times(n) --> specifies the no of times the mock operation is called.
-2)atLeastOnce() --> declares that the method must be called at least once but may be called more times than that.
-3)atLeast(n) --> specifies the min no of times the mocked operation is called.
-4)atMost(n) -->  specifies the max no of times the mocked operation is called.
+Mockito supports various operations for returning the appropriate VerificationMode instance. Here are few.<br>
+1)times(n) --> specifies the no of times the mock operation is called.<br>
+2)atLeastOnce() --> declares that the method must be called at least once but may be called more times than that.<br>
+3)atLeast(n) --> specifies the min no of times the mocked operation is called.<br>
+4)atMost(n) -->  specifies the max no of times the mocked operation is called.<br>
 5)never() --> It is the 0 verification setting. i.e. operation on the mock is never called during the execution of test. Typically used when testing alternative paths of the code.
 
 Verifying no interaction globally
