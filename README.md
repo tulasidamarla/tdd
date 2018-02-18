@@ -416,6 +416,22 @@ Capturing Arguments
 -------------------
 Sometimes, the method-under-test creates an object to pass to a dependency but never returns it. For ex, if a service class method creates a domain object and transforms it to an entity object and saves it to db. In this scenario, the test method really needs to validate the object and the data set on it to ensure it was constructed correctly. This is where argument capturing is handy. Mockito's mechanism for capturing these types of arguments is called Argument captors. Argument captor allows us to capture the actual object passed into the the mock during execution from within our test class code.
 
+Consider the below example for argument capturing demo:
 
+	// Setup
+	Mockito.when(mockOrderDao.insert(Mockito.any(OrderEntity.class))).thenReturn(1);
+	
+	// Execution
+	String orderNumber = this.target.openNewOrder(CUSTOMER_ID);
+	
+	// Verification
+	ArgumentCaptor<OrderEntity> orderEntityCaptor= ArgumentCaptor.forClass(OrderEntity.class);
+	Mockito.verify(mockOrderDao).insert(orderEntityCaptor.capture());
+	
+	OrderEntity capturedOrderEntity = orderEntityCaptor.getValue();
+	
+	Assert.assertNotNull(capturedOrderEntity);
+	Assert.assertEquals(CUSTOMER_ID, capturedOrderEntity.getCustomerId());
+	Assert.assertEquals(orderNumber, capturedOrderEntity.getOrderNumber());
 
 	
